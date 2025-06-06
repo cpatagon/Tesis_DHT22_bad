@@ -129,12 +129,13 @@ int16_t sps30_get_serial(char * serial) {
     int16_t ret;
 
     // Realiza el intercambio de datos con el sensor utilizando el protocolo SHDLC.
-    ret = sensirion_shdlc_xcv(SPS30_ADDR, SPS30_CMD_DEV_INFO, sizeof(param_buf), param_buf,
-                              SPS30_MAX_SERIAL_LEN, &header, (uint8_t *)serial);
+    ret = sensirion_shdlc_xcv(SPS30_ADDR, SPS30_CMD_DEV_INFO, sizeof(param_buf),
+                              param_buf, SPS30_MAX_SERIAL_LEN, &header,
+                              (uint8_t *)serial);
     // Verifica si hubo un error en la comunicación.
     if (ret < 0) {
-        return ret; // Retorna el código de error de la comunicación.
         uart_print("ERROR sps30_get_serial");
+        return ret; // Retorna el código de error de la comunicación.
     }
 
     // Verifica si el sensor reportó un estado de error.
@@ -225,7 +226,7 @@ int16_t sps30_get_fan_auto_cleaning_interval(uint32_t * interval_seconds) {
     if (ret < 0)
         return ret;
 
-    *interval_seconds = sensirion_bytes_to_uint32_t(data);
+    *interval_seconds = sensirion_common_bytes_to_uint32_t(data);
 
     if (header.state)
         return SPS30_ERR_STATE(header.state);
